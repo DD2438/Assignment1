@@ -11,6 +11,11 @@ public class FloatWA
         w = new float[i];
     }
 
+    public FloatWA(float[] w)
+    {
+        this.w=w;
+    }
+    
     public void initArray(int i)
     {
         w = new float[i];
