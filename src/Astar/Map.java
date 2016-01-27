@@ -137,7 +137,6 @@ public class Map {
 						(i==x+1 && j==y-1 && map[x][y-1] && map[x+1][y])||
 						(i==x-1 && j==y+1 && map[x][y+1] && map[x-1][y])||
 						(i==x+1 && j==y+1 && map[x][y+1] && map[x+1][y])){
-					System.out.println(i+" "+ j + " " + x+ " "+y);
 					continue;					
 				}
 				}catch(ArrayIndexOutOfBoundsException e){
@@ -183,6 +182,9 @@ public class Map {
 		
 	}
 		
+	public ArrayList<Point> getPath(){
+		return path;
+	}
 
 	public void print(){
 		String[][] ascii = new String[xMax][yMax];		
