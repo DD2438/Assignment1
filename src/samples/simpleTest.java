@@ -1,6 +1,5 @@
 package samples;
 
-
 // Copyright 2006-2015 Coppelia Robotics GmbH. All rights reserved. 
 // marc@coppeliarobotics.com
 // www.coppeliarobotics.com
@@ -16,7 +15,6 @@ package samples;
 // -------------------------------------------------------------------
 //
 // This file was automatically created for V-REP release V3.2.3 rev4 on December 21st 2015
-
 import coppelia.IntW;
 import coppelia.IntWA;
 import coppelia.remoteApi;
@@ -36,13 +34,13 @@ public class simpleTest
 {
 	public static void main(String[] args)
 	{
-		System.out.println("Program started");
-		remoteApi vrep = new remoteApi();
-		vrep.simxFinish(-1); // just in case, close all opened connections
+        System.out.println("Program started");
+        remoteApi vrep = new remoteApi();
+        vrep.simxFinish(-1); // just in case, close all opened connections
 		int clientID = vrep.simxStart("127.0.0.1",19999,true,true,5000,5);
 		if (clientID!=-1)
 		{
-			System.out.println("Connected to remote API server");	
+            System.out.println("Connected to remote API server");	
 
 			// Now try to retrieve data in a blocking fashion (i.e. a service call):
 			IntWA objectHandles = new IntWA(1);
@@ -83,8 +81,7 @@ public class simpleTest
 			vrep.simxFinish(clientID);
 		}
 		else
-			System.out.println("Failed connecting to remote API server");
-		System.out.println("Program ended");
-	}
+            System.out.println("Failed connecting to remote API server");
+        System.out.println("Program ended");
+    }
 }
-			
