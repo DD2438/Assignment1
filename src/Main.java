@@ -10,13 +10,17 @@ public class Main {
 	
 	public static void main(String[] args){
 		boolean[][] obstacles = new CsvReader("discMap.csv",MAPSIZEX,MAPSIZEY).convert();
+
 		
 		Map map = new Map(obstacles,1,1,14,19);
+
+		Remote remote = new Remote();
+		
+		Mover mover = new Mover(MAPSIZEX, MAPSIZEY, remote);
+		MapBuilder MB = new MapBuilder(map, remote, mover);
 		
 		map.getShortestPath();
 		ArrayList<Point> path = map.getPath();
-		
-		Mover mover = new Mover(MAPSIZEX, MAPSIZEY);
 		
 		for(Point p:path){
 			mover.move(p.y, p.x);

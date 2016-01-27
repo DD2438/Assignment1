@@ -23,44 +23,24 @@ public class Mover {
 	public  int mapsizeY;
 	public  float[] mover = new float[3];
 	public  FloatWA pointer;
-	int clientID;
 	int playerHandle;
+	int clientID;
 	remoteApi vrep ;
-	
+	Remote remote;
 
-	public Mover(int mapsizeX, int mapsizeY){
+	public Mover(int mapsizeX, int mapsizeY, Remote remote){
+		
+		this.remote = remote;
 		this.mapsizeX = mapsizeX;
-		this.mapsizeY = mapsizeY;
+		this.mapsizeY = mapsizeY;		
+		mover[2]=0.5f;
 		
-		mover[2]=1;
+		clientID = remote.clientID;
+		vrep = remote.vrep;		
 		
-		System.out.println("Program started");
-		vrep = new remoteApi();
-		vrep.simxFinish(-1); // just in case, close all opened connections
-		int clientID = vrep.simxStart("127.0.0.1",19999,true,true,5000,5);
-		if (clientID!=-1)
-		{
-			System.out.println("Connected to remote API server");	
-			
-			//Svars object, måste initieras
-			IntW tmpIntW =new IntW(0);		
-			
-			
-			/* används för att hämta "handle" av object.
-			 * parametrar: 
-			 * client iD 
-			 * namnet av objectet(kan ändras innuti v-rep)
-			 * initierad svarsobject
-			 */
-			vrep.simxGetObjectHandle(clientID, "Player", tmpIntW,remoteApi.simx_opmode_oneshot_wait);
-			
-			//extrahera värde
-			playerHandle = tmpIntW.getValue();						
-		}
+		playerHandle = remote.getHandle("Player");					
+		
 
-		else
-				System.out.println("Failed connecting to remote API server");
-			System.out.println("Program ended");
 	}
 	
 	public void move(int x, int y){	
@@ -72,6 +52,15 @@ public class Mover {
 		vrep.simxSetObjectPosition(clientID, playerHandle, -1, pointer, remoteApi.simx_opmode_oneshot);
 		wait(300);
 		
+	}
+	
+	public void move(int x, int y,  int handle){	
+		
+		mover[0] = (float) x-(mapsizeX/2)+ 0.5f;
+		mover[1] = (float) y-(mapsizeY/2)- 0.5f;
+		pointer = new FloatWA(mover);
+				
+		vrep.simxSetObjectPosition(clientID, handle, -1, pointer, remoteApi.simx_opmode_oneshot);		
 	}
 	
 	public  void wait(int dur){

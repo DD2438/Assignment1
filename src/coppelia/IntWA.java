@@ -10,12 +10,17 @@ public class IntWA
     {
         w = new int[i];
     }
+    
 
     public void initArray(int i)
     {
         w = new int[i];
     }
 
+    public IntWA(int[] w)
+    {
+        this.w = w;
+    }
     public int getLength()
     {
         return w.length;
