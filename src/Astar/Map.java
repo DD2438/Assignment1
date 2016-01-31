@@ -57,12 +57,6 @@ public class Map {
 	}
 	public void init(){
 		
-		//calculate all distances to end
-		for(int i=0; i<xMax ; i++){
-			for(int j=0; j<yMax; j++){
-				Hmap[i][j] = MHDist(i,j);								
-			}
-		}	
 		
 		//set start as parent to neighboring nodes
 		for(int i=start.x-1 ; i<=start.x+1; i++){
@@ -83,11 +77,6 @@ public class Map {
 	//calculates manhattan distance
 	private int MHDist(int x, int y) {
 		return Math.abs(x-end.x)+Math.abs(y-end.y);
-	}
-	
-	//calculates oclidian distance
-	private double ocDist(int x, int y) {
-		return Math.sqrt(Math.pow(x-end.x, 2)+Math.pow(y-end.y, 2));
 	}
 	
 	public ArrayList<Point> getShortestPath(){
