@@ -1,3 +1,5 @@
+package discretePathFinder;
+
 
 import Astar.Remote;
 import Astar.Map;

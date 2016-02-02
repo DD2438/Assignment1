@@ -16,9 +16,9 @@ public class Map {
     private int[][] Hmap;
     private int[][] Gmap;
     private Point[][] parents;
-    ArrayList<Point> openList = new ArrayList<>();
-    ArrayList<Point> closedList = new ArrayList<>();
-    ArrayList<Point> path = new ArrayList<>();
+    ArrayList<Point> openList = new ArrayList<Point>();
+    ArrayList<Point> closedList = new ArrayList<Point>();
+    ArrayList<Point> path = new ArrayList<Point>();
 
     public Map(int xMax, int yMax) {
         this.xMax = xMax;
@@ -59,13 +59,6 @@ public class Map {
 
     public void init() {
 
-        //calculate all distances to end
-        for (int i = 0; i < xMax; i++) {
-            for (int j = 0; j < yMax; j++) {
-                Hmap[i][j] = MHDist(i, j);
-            }
-        }
-
         //set start as parent to neighboring nodes
         for (int i = start.x - 1; i <= start.x + 1; i++) {
             for (int j = start.y - 1; j <= start.y + 1; j++) {
@@ -86,11 +79,6 @@ public class Map {
     //calculates manhattan distance
     private int MHDist(int x, int y) {
         return Math.abs(x - end.x) + Math.abs(y - end.y);
-    }
-
-    //calculates oclidian distance
-    private double ocDist(int x, int y) {
-        return Math.sqrt(Math.pow(x - end.x, 2) + Math.pow(y - end.y, 2));
     }
 
     public ArrayList<Point> getShortestPath() {
@@ -134,7 +122,7 @@ public class Map {
                     continue;
                 }
 
-                //obstacle detection. Check if trying to move diagonally
+				//obstacle detection. Check if trying to move diagonally
                 //if so, check if both sides are invalid, if so, movement is invalid
                 try {
                     if ((i == x - 1 && j == y - 1 && map[x][y - 1] && map[x - 1][y])
@@ -145,7 +133,7 @@ public class Map {
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
                     //Harmless exception
-                }
+                };
 
                 //return success if end point found
                 if (i == end.x && j == end.y) {
@@ -158,7 +146,8 @@ public class Map {
                     openList.add(temp);
                 }
 
-                //calculate new value to be parents value + cost
+				//calculate new value to be parents value + cost
+                //
                 parent = parents[x][y];
                 //if(i==x || j ==x)
                 newVal = Gmap[parent.x][parent.y] + 10;
@@ -172,6 +161,7 @@ public class Map {
                 }
             }
         }
+
         //Sort the openList
         Collections.sort(openList, new Comparator<Point>() {
             @Override
@@ -180,6 +170,7 @@ public class Map {
             }
         });
         return false;
+
     }
 
     public ArrayList<Point> getPath() {
@@ -210,6 +201,5 @@ public class Map {
             }
             System.out.println();
         }
-    }
-
+    }     
 }

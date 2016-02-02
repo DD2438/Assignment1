@@ -1,3 +1,5 @@
+package discretePathFinder;
+
 // Copyright 2006-2015 Coppelia Robotics GmbH. All rights reserved. 
 // marc@coppeliarobotics.com
 // www.coppeliarobotics.com
