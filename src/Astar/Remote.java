@@ -57,6 +57,37 @@ public class Remote {
                 robotHandle, new_pos, remoteApi.simx_opmode_oneshot);
     }
 
+    public void setAbsPosition(int robotHandle, float[] position) {
+        FloatWA new_pos = new FloatWA(position);
+        remote.vrep.simxSetObjectPosition(remote.clientID, robotHandle,
+                -1, new_pos, remoteApi.simx_opmode_oneshot);
+    }
+    
+    public float getOrientation(int robotHandle) {
+        FloatWA curent_Orientation = new FloatWA(3);
+        remote.vrep.simxGetObjectOrientation(clientID, robotHandle, getParent(robotHandle), 
+                curent_Orientation, remoteApi.simx_opmode_buffer);
+        return curent_Orientation.getArray()[2];
+    }
+    
+    public float getOrientationFirst(int robotHandle) {
+        FloatWA curent_Orientation = new FloatWA(3);
+        remote.vrep.simxGetObjectOrientation(clientID, robotHandle, getParent(robotHandle), 
+                curent_Orientation, remoteApi.simx_opmode_streaming);
+        return curent_Orientation.getArray()[2];
+    }
+    
+    public void setOrientation(int robotHandle, float[] position) {
+        FloatWA new_orientation = new FloatWA(position);
+        remote.vrep.simxSetObjectOrientation(remote.clientID, robotHandle, -1, 
+                new_orientation, remoteApi.simx_opmode_oneshot);
+    }
+    
+    public int getParent(int robotHandle) {
+        IntW parent = new IntW(0);
+        remote.vrep.simxGetObjectParent(remote.clientID, robotHandle, parent, remoteApi.simx_opmode_oneshot_wait);
+        return parent.getValue();
+    }
     public void close() {
         System.out.println("Closing connection...");
         // Now close the connection to V-REP:	

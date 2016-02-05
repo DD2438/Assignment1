@@ -13,15 +13,20 @@ public class Discrete extends Motion {
         float[] curent_pos;
         for (int i = 0; i < path.length; i++) {
             curent_pos = remote.getPosition(robotHandle);
-            boolean dis_coverd = singleMove(path[i].x, path[i].y);
+            Point2D.Float center = new Point2D.Float(curent_pos[0], curent_pos[1]);
+            float theta = angleInWorld(center, path[i]);          
+            boolean dis_coverd = singleMove(path[i].x, path[i].y, theta);
             while (!dis_coverd) {
-                dis_coverd = singleMove(path[i].x, path[i].y);
+                curent_pos = remote.getPosition(robotHandle);
+                center = new Point2D.Float(curent_pos[0], curent_pos[1]);
+                theta = angleInWorld(center, path[i]);
+                dis_coverd = singleMove(path[i].x, path[i].y,theta);
             }
         }
 
     }
 
-    public boolean singleMove(float x, float y) {
+    public boolean singleMove(float x, float y, float theta) {
         float[] curent_pos = remote.getPosition(robotHandle);
         float[] position = new float[3];
         boolean dis_coverd = true;
@@ -33,6 +38,9 @@ public class Discrete extends Motion {
             position[1] = (position[1] / dist) * MAX_DIS;
             dis_coverd = false;
         }
+        float[] orientation = new float[3];
+        orientation[2] = theta;
+        remote.setOrientation(robotHandle, orientation);
         remote.setPosition(robotHandle, position);
         return dis_coverd;
     }
