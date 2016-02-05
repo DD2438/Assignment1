@@ -22,6 +22,7 @@ public class RRT {
     //DynamicPoint model ;
     KinematicCar model;
     Node closest;
+    boolean flag = false;
 
 	Node last = null;
 
@@ -55,27 +56,36 @@ public class RRT {
     	TimeUnit tu = TimeUnit.NANOSECONDS;
     	
     	do{
-    	random = randomPos();
-    	closest = tree.getClosest(random);
-    	
-    	target = move(closest, random);
-
-    	if(cc.contains(target) || target.x>100 ||target.y>100 || target.x <0 || target.y <0)
-    		continue;
-    	last= new Node(closest, target, tree);    	
-    //	last.v = new Point2D.Float(this.model.v.x, this.model.v.y);
-    	last.orientation = this.model.orientation;
-
-    		
-    	v.add(new Line2D.Float(new Point2D.Float(last.data.x*10, (1000-(last.data.y*10)) ), new Point2D.Float(last.parent.data.x*10, (1000-(last.parent.data.y*10)) )));
-    	try {
-			tu.sleep(1);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-    	
-    	
-    	}
+    		do{
+	    	random = randomPos();    	
+	    	closest = tree.getClosest(random);
+    		}
+    		while(cc.checkForCollison(new Line2D.Float(closest.data, random)));
+	    	
+	    	if(random.equals(goal) ){
+	    		flag = true;
+	    	}	
+	    	if(flag)
+	    		target = moveToGoal(closest,random);
+	    	else
+	    		target = move(closest, random);
+	    	
+	    	if(cc.contains(target) || target.x>100 ||target.y>100 || target.x <0 || target.y <0)
+	    		continue;
+	    	last= new Node(closest, target, tree);    	
+	    //	last.v = new Point2D.Float(this.model.v.x, this.model.v.y);
+	    	last.orientation = this.model.orientation;
+	
+	    		
+	    	v.add(new Line2D.Float(new Point2D.Float(last.data.x*10, (1000-(last.data.y*10)) ), new Point2D.Float(last.parent.data.x*10, (1000-(last.parent.data.y*10)) )));
+	    	try {
+				tu.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+	    	
+	    	
+	    	}
     	while(target.distance(goal)>0.5 );
 
 
@@ -123,12 +133,19 @@ public class RRT {
 		//return model.calculate(closest.data, random, closest.v);
 		//return model.calculate(closest.data, random);
 	}
+	
+	private Point2D.Float moveToGoal(Node closest, Point2D.Float random) {
+		
+		return model.calculateToGoal(closest.data, random, closest.orientation);
+		//return model.calculate(closest.data, random, closest.v);
+		//return model.calculate(closest.data, random);
+	}
 
 
 	//Should implement psudo random strategy
 	
 	public Point2D.Float randomPos(){
-		if(Math.random()<0.9)
+		if(Math.random()<0.3 || flag)
 			return goal;
 		
 		Point2D.Float p = new Point2D.Float();
