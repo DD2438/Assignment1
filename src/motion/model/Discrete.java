@@ -36,4 +36,19 @@ public class Discrete extends Motion {
         remote.setPosition(robotHandle, position);
         return dis_coverd;
     }
+    
+    public Point2D.Float predict(Point2D.Float s, Point2D.Float e){    
+	    
+	    float x =  e.x - s.x;
+	    float y = e.y - s.y;
+	    
+	    float dist = (float) Math.sqrt(x*x + y*y);
+	    if (dist > MAX_DIS) {
+	       x = (x / dist) * MAX_DIS;
+	       y = (y / dist) * MAX_DIS;
+	    }
+	    
+	    return new Point2D.Float(x, y);
+    }
+    
 }

@@ -8,16 +8,16 @@ import java.util.ArrayList;
 public class VGraph {
     int n;
     boolean[][] adjG;
-    double[] x,y;
+    float[] x,y;
     int[] pol;
     Point2D S;
     Point2D E;
     Point[] V;
     Polygon[] V1;
     int vertices;
-    ArrayList<Polygon> obstacles= new ArrayList<Polygon>();
+    public ArrayList<Polygon> obstacles= new ArrayList<Polygon>();
     
-    public VGraph(double[] x, double[] y, int[] pol, Point2D S, Point2D E) {
+    public VGraph(float[] x, float[] y, int[] pol, Point2D S, Point2D E) {
         this.x=x; 
         this.y=y;
         this.pol=pol;
@@ -90,7 +90,6 @@ public class VGraph {
 				if(l1.equals(t1) || l1.equals(t2) || l2.equals(t1) || l2.equals(t2))
 					 continue;					
 				if(l.intersectsLine(tmp1))	{
-					System.out.println("collided with " +l.getX1()+"," +l.getY1()+"-"+l.getX2()+","+l.getY2());
 					return true;		}
 			}
 		}

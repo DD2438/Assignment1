@@ -7,14 +7,15 @@ import coppelia.remoteApi;
 import java.awt.geom.Point2D;
 
 public abstract class Motion {
-    public static final float MAX_VELOCITY = 1.5f;
-    public static final float MAX_DIS = 0.05f;
-    public static final float MAX_ACCELERATION = 0.5f;
-    protected float dt = 0.1f;
+    public static final float MAX_VELOCITY = 1f;
+   // public static final float MAX_DIS = 0.05f;
+    public static final float MAX_ACCELERATION = 0.4f;
+    protected float dt = 20f;
     protected int robotHandle;
     protected Remote remote;
     private final FloatWA curent_pos;
-
+    
+    
     public Motion(String robot) {
         remote = Remote.getRemote();
         robotHandle = remote.getHandle(robot);

@@ -39,4 +39,42 @@ public class CsvReader {
 		} catch(Exception e){}
 		return map;
 	}
+	
+	public float[] read(String path, int l){
+		float[] val = new float[l];
+		String line = "";
+		String cvsSplitBy = ",";
+	try {
+			
+			BufferedReader br = new BufferedReader(new FileReader(path));
+			int i=0;
+			while ((line = br.readLine()) != null) {
+			       
+					val[i] = Float.valueOf(line);
+					i++;
+				
+			}
+
+		} catch(Exception e){}
+		return val;
+	}
+	
+	public int[] readInt(String path, int l){
+		int[] val = new int[l];
+		String line = "";
+		String cvsSplitBy = ",";
+	try {
+			
+			BufferedReader br = new BufferedReader(new FileReader(path));
+			int i=0;
+			while ((line = br.readLine()) != null) {
+			       
+				val[i] = Integer.valueOf(line);
+				i++;
+			
+		}
+
+		} catch(Exception e){}
+		return val;
+	}
 }
