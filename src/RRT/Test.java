@@ -8,6 +8,7 @@ import java.util.Collections;
 
 import Astar.CsvReader;
 import Astar.Remote;
+import motion.model.DynamicCar;
 import motion.model.DynamicPoint;
 import motion.model.KinematicCar;
 import motion.model.KinematicPoint;
@@ -18,9 +19,9 @@ public class Test {
 	public static void main(String[] args){
 		
 		CsvReader reader = new CsvReader(null,0,0);
-		float[] x = reader.read("C:\\x.csv", 23);
-		float[] y = reader.read("C:\\y.csv", 23);
-		int[] pol = reader.readInt("C:\\pol.csv", 23);
+		float[] x = reader.read("/home/a/s/asafari/x.csv", 23);
+		float[] y = reader.read("/home/a/s/asafari/y.csv", 23);
+		int[] pol = reader.readInt("/home/a/s/asafari/pol.csv", 23);
 
 
 		Point2D.Float end= new Point2D.Float(30,70);
@@ -59,11 +60,12 @@ public class Test {
 	    		}
 	    	}
 	    
-	    	CollisionCheck cc= new CollisionCheck(x,y,pol);
+	    	CollisionCheck cc= new CollisionCheck(x,y,pol,obstacles);
 	    	
 		DynamicPoint dp = new DynamicPoint("node");
 		KinematicPoint kp = new KinematicPoint("node");
 		KinematicCar kc = new KinematicCar("node");
+		DynamicCar dc = new DynamicCar("node");
 		
 		RRT rrt = new RRT(100,100, end, start, obstacles,kc,cc);
 		
