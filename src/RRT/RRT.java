@@ -2,9 +2,11 @@ package RRT;
 
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Float;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import motion.model.DynamicCar;
 import motion.model.DynamicPoint;
 import motion.model.KinematicCar;
 import motion.model.KinematicPoint;
@@ -21,8 +23,11 @@ public class RRT {
     //KinematicPoint model ;
     //DynamicPoint model ;
     KinematicCar model;
+  //  DynamicCar model;
     Node closest;
     boolean flag = false;
+    boolean flag2 = false;
+    Point2D.Float locked = null;
 
 	Node last = null;
 
@@ -32,7 +37,8 @@ public class RRT {
     public  RRT(float maxX, float maxY, Point2D.Float start, Point2D.Float goal, ArrayList<Polygon> polygons, Motion model, CollisionCheck cc){
 
         this.cc = cc;
-    	this.model = (KinematicCar) model;
+        //this.model = (DynamicCar) model;
+        this.model = (KinematicCar) model;
     	//this.model = (DynamicPoint) model;
     	this.polygons = polygons;    	
     	this.start = start;
@@ -49,31 +55,39 @@ public class RRT {
 		drawMap(v);
 		
     	Tree tree = new Tree(start);
-    //	tree.root.v=new Point2D.Float(this.model.v.x, this.model.v.y);
+    	//tree.root.v=new Point2D.Float(this.model.v.x, this.model.v.y);
     	tree.root.orientation = 0;
     	Point2D.Float target;
     	Point2D.Float random;
     	TimeUnit tu = TimeUnit.NANOSECONDS;
-    	
+
+    	System.out.print("vanilla");
     	do{
     		do{
-	    	random = randomPos();    	
+    			if(flag && Math.random()<0.5)
+    				random = locked;
+    			else
+    				random = randomPos();    	
 	    	closest = tree.getClosest(random);
     		}
     		while(cc.checkForCollison(new Line2D.Float(closest.data, random)));
 	    	
-	    	if(random.equals(goal) ){
-	    		flag = true;
-	    	}	
-	    	if(flag)
+	    
+	    	if(flag && Math.random()<0.5)
 	    		target = moveToGoal(closest,random);
 	    	else
 	    		target = move(closest, random);
 	    	
+	    	if(!cc.checkForCollison(new Line2D.Float(target, goal))){
+	    		System.out.println("setting flag");
+	    		flag = true;
+	    		locked = target;
+	    	}
+	    	
 	    	if(cc.contains(target) || target.x>100 ||target.y>100 || target.x <0 || target.y <0)
 	    		continue;
 	    	last= new Node(closest, target, tree);    	
-	    //	last.v = new Point2D.Float(this.model.v.x, this.model.v.y);
+	    	//last.v = new Point2D.Float(this.model.v.x, this.model.v.y);
 	    	last.orientation = this.model.orientation;
 	
 	    		
@@ -86,7 +100,7 @@ public class RRT {
 	    	
 	    	
 	    	}
-    	while(target.distance(goal)>0.5 );
+    	while(target.distance(goal)>5 );
 
 
     	
@@ -129,6 +143,7 @@ public class RRT {
 
 	private Point2D.Float move(Node closest, Point2D.Float random) {
 		
+		//return model.calculate(closest.data, random, closest.orientation, closest.v);
 		return model.calculate(closest.data, random, closest.orientation);
 		//return model.calculate(closest.data, random, closest.v);
 		//return model.calculate(closest.data, random);
@@ -136,7 +151,8 @@ public class RRT {
 	
 	private Point2D.Float moveToGoal(Node closest, Point2D.Float random) {
 		
-		return model.calculateToGoal(closest.data, random, closest.orientation);
+		//return model.calculateToGoal(closest.data, random, closest.orientation, closest.v);
+		return model.calculate(closest.data, random, closest.orientation);
 		//return model.calculate(closest.data, random, closest.v);
 		//return model.calculate(closest.data, random);
 	}
@@ -145,8 +161,11 @@ public class RRT {
 	//Should implement psudo random strategy
 	
 	public Point2D.Float randomPos(){
-		if(Math.random()<0.3 || flag)
+		if(flag && Math.random()<0.5 )
 			return goal;
+		/*
+		if(Math.random()<0.3 || flag)
+			return goal;*/
 		
 		Point2D.Float p = new Point2D.Float();
 		float x;
