@@ -11,7 +11,8 @@ public class Remote {
     public int clientID;
     private static Remote remote;
 
-    private Remote() {
+    public Remote() {
+    	remote = this;
         vrep = new remoteApi();
         vrep.simxFinish(-1); // just in case, close all opened connections
         clientID = vrep.simxStart("127.0.0.1", 19999, true, true, 5000, 5);

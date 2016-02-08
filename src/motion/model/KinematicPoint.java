@@ -44,5 +44,17 @@ public class KinematicPoint extends Motion {
         remote.setOrientation(robotHandle, orientation);
         remote.setPosition(robotHandle, position);
     }
-
+    
+    public Point2D.Float calculate(Point2D.Float s, Point2D.Float e){
+    	   float Vx = (e.x - s.x) / dt;
+           float Vy = (e.y - s.y) / dt;
+           float V = (float) Math.sqrt((Vx * dt)*( Vx * dt)+ (Vy*dt) * (Vy * dt));
+           if (V > MAX_VELOCITY) {
+               Vx = (Vx / V) * MAX_VELOCITY;
+               Vy = (Vy / V) * MAX_VELOCITY;
+           }
+           Point2D.Float target = new Point2D.Float( s.x+ (Vx * dt),s.y+(Vy * dt));
+	    return target;    
+        
+    }
 }

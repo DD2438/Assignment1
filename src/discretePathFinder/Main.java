@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import Astar.CsvReader;
 import Astar.Map;
+import Astar.Map16;
 
 public class Main {
 
@@ -13,9 +14,9 @@ public class Main {
     public static final int MAPSIZEY = 20;
 
     public static void main(String[] args) {
-        boolean[][] obstacles = new CsvReader("/home/ermias/NetBeansProjects/DD2438/discMap.csv", MAPSIZEX, MAPSIZEY).convert();
+        boolean[][] obstacles = new CsvReader("discMap.csv", MAPSIZEX, MAPSIZEY).convert();
 
-        Map map = new Map(obstacles, 1, 1, 14, 19);
+        Map16 map = new Map16(obstacles, 1, 1, 14, 19);
 
         Remote remote = Remote.getRemote();
 

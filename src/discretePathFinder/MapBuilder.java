@@ -3,6 +3,7 @@ package discretePathFinder;
 
 import Astar.Remote;
 import Astar.Map;
+import Astar.Map16;
 
 public class MapBuilder {
 
@@ -10,7 +11,7 @@ public class MapBuilder {
     Remote r;
     Mover m;
 
-    public MapBuilder(Map map, Remote r, Mover m) {
+    public MapBuilder(Map16 map, Remote r, Mover m) {
 
         board = map.map;
         this.m = m;
