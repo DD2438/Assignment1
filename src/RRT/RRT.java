@@ -14,16 +14,16 @@ import motion.model.Motion;
 import visibility.Polygon;
 
 public class RRT {
-    int maxX = 100;
-    int maxY = 100;
+    int maxX = 300;
+    int maxY = 300;
     Point2D.Float start;
     Point2D.Float goal;
     ArrayList<Polygon> polygons;
     CollisionCheck cc ;
     //KinematicPoint model ;
-    //DynamicPoint model ;
-    KinematicCar model;
-  //  DynamicCar model;
+  //  DynamicPoint model ;
+   KinematicCar model;
+   // DynamicCar model;
     Node closest;
     boolean flag = false;
     boolean flag2 = false;
@@ -34,118 +34,91 @@ public class RRT {
     Point2D.Float f = new Point2D.Float(maxY, maxX);
 	long timer = System.currentTimeMillis();
     
-    public  RRT(float maxX, float maxY, Point2D.Float start, Point2D.Float goal, ArrayList<Polygon> polygons, Motion model, CollisionCheck cc){
-
+    public  RRT(int maxX, int maxY, Point2D.Float start, Point2D.Float goal, ArrayList<Polygon> polygons, Motion model, CollisionCheck cc){
+    	this.maxX = maxX;
+    	this.maxY = maxY;
         this.cc = cc;
-        //this.model = (DynamicCar) model;
+    // this.model = (DynamicCar) model;
         this.model = (KinematicCar) model;
     	//this.model = (DynamicPoint) model;
     	this.polygons = polygons;    	
     	this.start = start;
     	this.goal = goal;
-    	
-    	
+    
+    	/*
 		visualizer v;
-		new Thread(v =new visualizer()).start();
-    	try {
-			Thread.sleep(1000);
+		new Thread(v =new visualizer(polygons, maxX, maxY)).start();
+		try {
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}
-		drawMap(v);
-		
+		}*/
     	Tree tree = new Tree(start);
-    	//tree.root.v=new Point2D.Float(this.model.v.x, this.model.v.y);
-    	tree.root.orientation = 0;
+    	tree.root.speed = 0;
+    //	tree.root.v=new Point2D.Float(this.model.v.x, this.model.v.y);
+    	tree.root.orientation = (float) (Math.PI/2);
     	Point2D.Float target;
     	Point2D.Float random;
-    	TimeUnit tu = TimeUnit.NANOSECONDS;
-
+    	int counter;
     	System.out.print("vanilla");
+    	long timer = System.currentTimeMillis();
     	do{
+    		if(System.currentTimeMillis()-timer >1200000){
+    			last = null;
+    			break;}
     		do{
     			if(flag && Math.random()<0.5)
     				random = locked;
     			else
     				random = randomPos();    	
-	    	closest = tree.getClosest(random);
-    		}
+    			closest = tree.getClosest(random);
+    		}    		
     		while(cc.checkForCollison(new Line2D.Float(closest.data, random)));
-	    	
-	    
-	    	if(flag && Math.random()<0.5)
-	    		target = moveToGoal(closest,random);
-	    	else
-	    		target = move(closest, random);
-	    	
-	    	if(!cc.checkForCollison(new Line2D.Float(target, goal))){
-	    		System.out.println("setting flag");
-	    		flag = true;
-	    		locked = target;
-	    	}
-	    	
-	    	if(cc.contains(target) || target.x>100 ||target.y>100 || target.x <0 || target.y <0)
-	    		continue;
-	    	last= new Node(closest, target, tree);    	
-	    	//last.v = new Point2D.Float(this.model.v.x, this.model.v.y);
-	    	last.orientation = this.model.orientation;
-	
-	    		
-	    	v.add(new Line2D.Float(new Point2D.Float(last.data.x*10, (1000-(last.data.y*10)) ), new Point2D.Float(last.parent.data.x*10, (1000-(last.parent.data.y*10)) )));
-	    	try {
-				tu.sleep(1);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-	    	
-	    	
-	    	}
-    	while(target.distance(goal)>5 );
+    		
+	    	counter =0;	    	
+    		do{		    
+		    	if(flag && Math.random()<0.8)
+		    		target = moveToGoal(closest,random);
+		    	else
+		    		target = move(closest, random);
+		    	
+		    	if(!cc.checkForCollison(new Line2D.Float(target, goal))){
+		    		flag = true;
+		    		locked = target;
+		    	}
+		    	
+		    	if(cc.contains(target) || target.x>maxX||target.y>maxY || target.x <0 || target.y <0)
+		    		break;
+		    	last= new Node(closest, target, tree);    	
+		    //	last.speed = this.model.v;
+		  // 	last.v = new Point2D.Float(this.model.v.x, this.model.v.y);
+		    	last.orientation = this.model.orientation;
+		
+		    	//v.drawLine(last);
+		    	
+		    	
+		    	closest = last;
+		    	counter++;
+    		}
+    		while(counter <5 && target.distance(goal)>10);
+    		
+	    }
+    	while(target.distance(goal)>10);
 
-
-    	
-    	v.kek();
-    	while(last.parent!=null){
-        	v.add(new Line2D.Float(new Point2D.Float(last.data.x*10, (1000-(last.data.y*10)) ), new Point2D.Float(last.parent.data.x*10, (1000-(last.parent.data.y*10)) )));
-        	try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-        	last=last.parent;
-    	}
+    
+    	//v.drawPath(last);
+    
     }
     
-
-
-    
-    
-	private void drawMap(visualizer v) {
-		
-		for(Polygon p: polygons){
-			for(Line2D l : p.edges){
-				v.add(new Line2D.Double((l.getP1().getX()*10),(1000-(l.getP1().getY()*10)),(l.getP2().getX()*10),(1000-(l.getP2().getY()*10))));
-				//v.add(l);
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		
-	}
-
 
 
 
 
 	private Point2D.Float move(Node closest, Point2D.Float random) {
 		
-		//return model.calculate(closest.data, random, closest.orientation, closest.v);
+	//	return model.calculate(closest.data, random, closest.orientation, closest.v);
 		return model.calculate(closest.data, random, closest.orientation);
-		//return model.calculate(closest.data, random, closest.v);
+	//	return model.calculate(closest.data, random, closest.v);
 		//return model.calculate(closest.data, random);
 	}
 	
@@ -158,21 +131,16 @@ public class RRT {
 	}
 
 
-	//Should implement psudo random strategy
 	
 	public Point2D.Float randomPos(){
-		if(flag && Math.random()<0.5 )
+		if(flag && Math.random()<0.6 )
 			return goal;
-		/*
-		if(Math.random()<0.3 || flag)
-			return goal;*/
-		
 		Point2D.Float p = new Point2D.Float();
 		float x;
 		float y;
 		do{
 			x =(float)Math.random()* maxX;
-			 y =(float)Math.random()* maxY;
+			y =(float)Math.random()* maxY;
 			p.setLocation(x, y);
 		}
 		while(cc.contains(p));

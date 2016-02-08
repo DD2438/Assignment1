@@ -2,15 +2,28 @@ package RRT;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
-import javax.swing.*;  
+import javax.swing.*;
+
+import visibility.Polygon;  
 public class visualizer   extends JFrame implements Runnable {
 	 panel panel ;
-		   public visualizer() {
+	 ArrayList<Polygon> polygons;
+	 int x=100;
+	 int y=100;
+	 float r;
+
+ 	TimeUnit tu = TimeUnit.NANOSECONDS;
+		   public visualizer(ArrayList<Polygon> polygons, int x, int y) {
+			   r = 600/x;
+			   this.polygons = polygons;
 		      JFrame f = new JFrame("Line");
 		       panel = new panel();
 		      f.add(panel);
-		      f.setSize(new Dimension(1000, 1000));
+		      f.setSize(new Dimension(600, 600));
 		      f.setVisible(true);
 		      
 		   }
@@ -24,5 +37,41 @@ public class visualizer   extends JFrame implements Runnable {
 
 		@Override
 		public void run() {
+			for(Polygon p: polygons){
+				for(Line2D l : p.edges){
+					add(new Line2D.Double((l.getP1().getX()*r),(600-(l.getP1().getY()*r)),(l.getP2().getX()*r),(600-(l.getP2().getY()*r))));
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}			
+		}
+		
+		public void drawPath(Node last){
+			kek();
+			Node tmp = last;
+	    	
+	    	while(tmp.parent!=null){
+	        	add(new Line2D.Float(new Point2D.Float(tmp.data.x*r, (600-(tmp.data.y*r)) ), new Point2D.Float(tmp.parent.data.x*r, (600-(tmp.parent.data.y*r)) )));
+	        	try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+	        	tmp=tmp.parent;
+	    	}
+			kek();
+		}
+
+		public void drawLine(Node last) {
+		add(new Line2D.Float(new Point2D.Float(last.data.x*r, (600-(last.data.y*r)) ), new Point2D.Float(last.parent.data.x*r, (600-(last.parent.data.y*r)) )));
+    	try {
+			tu.sleep(10);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+			
 		}
 } 

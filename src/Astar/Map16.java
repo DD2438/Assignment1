@@ -110,21 +110,32 @@ public class Map16 {
         Point parent;
 
         //updates the Gvalues of neighbors
-        for (int i = x - 1; i <= x + 1; i++) {
-            for (int j = y - 1; j <= y + 1; j++) {
+        for (int i = x - 2; i <= x + 2; i++) {
+            for (int j = y - 2; j <= y + 2; j++) {
 
                 //Ignore invalid points
-                if ((i == x && j == y) || i < 0 || j < 0 || i >= xMax || j >= yMax || map[i][j]) {
+                if ((i == x && j == y) ||( ((i==x-2)||i==x+2) &&(j == y-2 || j==y | j==y+2))||
+                		( ((j==y-2)||j==y+2) &&(i == x-2 || i==x | i==x+2))
+                		|| i < 0 || j < 0 || i >= xMax || j >= yMax || map[i][j]) {
                     continue;
                 }
 
 				//obstacle detection. Check if trying to move diagonally
                 //if so, check if both sides are invalid, if so, movement is invalid
                 try {
-                    if ((i == x - 1 && j == y - 1 && map[x][y - 1] && map[x - 1][y])
+                    if(		   (i == x - 1 && j == y - 1 && map[x][y - 1] && map[x - 1][y])
                             || (i == x + 1 && j == y - 1 && map[x][y - 1] && map[x + 1][y])
                             || (i == x - 1 && j == y + 1 && map[x][y + 1] && map[x - 1][y])
-                            || (i == x + 1 && j == y + 1 && map[x][y + 1] && map[x + 1][y])) {
+                            || (i == x + 1 && j == y + 1 && map[x][y + 1] && map[x + 1][y])
+                            || (i == x - 1 && j == y - 2 && (map[x-1][y-1] || map[x][y-1]))
+                            || (i == x + 1 && j == y - 2 && (map[x+1][y-1] || map[x][y-1]))
+                            || (i == x - 2 && j == y - 1 && (map[x-1][y-1] || map[x-1][y]))
+                            || (i == x + 2 && j == y - 1 && (map[x+1][y-1] || map[x+1][y]))
+                            || (i == x - 2 && j == y + 1 && (map[x-1][y]   || map[x-1][y+1]))
+                            || (i == x + 2 && j == y + 1 && (map[x+1][y]   || map[x+1][y+1]))
+                            || (i == x - 1 && j == y + 2 && (map[x-1][y+1] || map[x][y+1]))
+                            || (i == x + 1 && j == y + 2 && (map[x+1][y+1] || map[x][y+1]))
+                            ) {
                         continue;
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {

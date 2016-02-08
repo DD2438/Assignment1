@@ -65,6 +65,7 @@ public class DynamicPoint extends Motion {
     
     public Point2D.Float calculate(Point2D.Float s, Point2D.Float e, Point2D.Float vel){
     	v=vel;
+    	
         float Vx = (e.x - s.x) / dt;
         float Vy = (e.y - s.y) / dt;
         
@@ -76,6 +77,7 @@ public class DynamicPoint extends Motion {
             ax = (ax / at) * MAX_ACCELERATION;
             ay = (ay / at) * MAX_ACCELERATION;
         }
+        
         Vx = v.x + ax * dt *(float) (0.5+Math.random()*0.5);
         Vy = v.y + ay * dt *(float) (0.5+Math.random()*0.5) ;
         float V = (float) Math.sqrt(Vx * Vx + Vy * Vy);

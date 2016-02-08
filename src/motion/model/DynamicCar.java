@@ -22,19 +22,6 @@ public class DynamicCar extends Motion {
 
     }
     
-    public static double angle(Point2D.Float p1, Point2D.Float p2, Point2D.Float p3){
-    	Line2D line1 = new Line2D.Double(p1,p2);
-    	Line2D line2 = new Line2D.Double(p2,p3);
-    	
-    	 double angle1 = Math.atan2(line1.getY1() - line1.getY2(),
-                 line1.getX1() - line1.getX2());
-    	 
-    	 double angle2 = Math.atan2(line2.getY1() - line2.getY2(),
-                 line2.getX1() - line2.getX2());
-    	 
-    	 return ((angle1-angle2)>Math.PI? -((2*Math.PI)-(angle1-angle2)) : (angle1-angle2));
-    }
-    
     
     
     public Point2D.Float getFront(Point2D.Float current){
@@ -46,44 +33,39 @@ public class DynamicCar extends Motion {
     
     
     
-    public Point2D.Float calculate(Point2D.Float s, Point2D.Float e, float orientation, Point2D.Float v){
+    public Point2D.Float calculate(Point2D.Float s, Point2D.Float e, float orientation, Point2D.Float vel){
     	this.orientation = orientation;
-    	this.v = v;
+    	v = vel;
     	Point2D.Float front = getFront(s);
     	
-    	theta = (float) angle(getFront(front), front, e);
+    	theta = (float) -angle(getFront(front), front, e);
     	double Max = 1;
     	if(theta>Max)
     		theta =(float) Max;
     	if(theta<-Max)
     		theta =(float) -Max;
 
-   	theta *= (0.3+(Math.random()*0.7));
+    	theta *= (0.3+(Math.random()*0.7));
     	
     	if(Math.random()<0.1)
     		theta = 0;
     	
-    //	theta = (float) (Math.random()*(Math.random()>0.5? -1:1));
-    	
-    	//theta = 0.5F;
-    	
-
         float Vx = (e.x - s.x) / dt;
         float Vy = (e.y - s.y) / dt;
         
         float ax = (Vx - v.x) /dt;
         float ay = (Vy - v.y) /dt;
-        
 
         float at = (float) Math.sqrt(ax * ax + ay * ay);
-        
         if (at > MAX_ACCELERATION) {
             ax = (ax / at) * MAX_ACCELERATION;
             ay = (ay / at) * MAX_ACCELERATION;
         }
+        
 
         Vx = v.x + ax * dt;
         Vy = v.y + ay * dt ;
+        
         float V = (float) Math.sqrt(Vx * Vx + Vy * Vy);
 
         float newX = (float) (V*Math.cos(orientation));
@@ -91,31 +73,24 @@ public class DynamicCar extends Motion {
         float newY = (float) (V*Math.sin(orientation));
         
         this.orientation += (float) ((V/length)* Math.tan(theta));
+        v.x = newX;
+        v.y = newY;
         
 		return new Point2D.Float(s.x+newX, s.y+newY);
     	
     }
 
-	public Float calculateToGoal(Point2D.Float s, Point2D.Float e, float orientation, Point2D.Float v) {
+	public Float calculateToGoal(Point2D.Float s, Point2D.Float e, float orientation, Point2D.Float vel) {
 		this.orientation = orientation;
-    	this.v = v;
+    	v = vel;
     	Point2D.Float front = getFront(s);
     	
-    	theta = (float) angle(getFront(front), front, e);
+    	theta = (float) -angle(getFront(front), front, e);
     	double Max = 1;
     	if(theta>Max)
     		theta =(float) Max;
     	if(theta<-Max)
     		theta =(float) -Max;
-
-   	theta *= (0.3+(Math.random()*0.7));
-    	
-    	if(Math.random()<0.1)
-    		theta = 0;
-    	
-    //	theta = (float) (Math.random()*(Math.random()>0.5? -1:1));
-    	
-    	//theta = 0.5F;
     	
 
         float Vx = (e.x - s.x) / dt;
@@ -141,8 +116,12 @@ public class DynamicCar extends Motion {
         float newY = (float) (V*Math.sin(orientation));
         
         this.orientation += (float) ((V/length)* Math.tan(theta));
+
+        Point2D.Float target = new Point2D.Float(s.x+ (newX * dt), s.y+(newY * dt));
+        v.x = newX;
+        v.y = newY;
         
-		return new Point2D.Float(s.x+newX, s.y+newY);
+		return  target;
 	}
     
     

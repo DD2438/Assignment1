@@ -1,28 +1,32 @@
 package visibility;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 
+import Astar.CsvReader;
 import Astar.NeighborListMap;
 
 public class Test{
-	
+
+	public static final int size =13;
 	public static void main(String[] args){
 		
-		
-		double[] x = {1, 2 , 2, 1,3,4,4,3};
-		double[] y = {1, 1 , 5, 5,0,0,1,1};
-		int[] pol= {1,1,1,3,1,1,1,3};
 
+		CsvReader reader = new CsvReader(null,0,0);
+		float[] x = reader.read("C:\\x2.csv", size);
+		float[] y = reader.read("C:\\y2.csv", size);
+		int[] pol = reader.readInt("C:\\pol2.csv", size);
+		
 		
 
-		Point end= new Point(4,4);
-		Point start= new Point(0,1);
+		Point2D.Float start= new Point2D.Float(30,70);
+		Point2D.Float end= new Point2D.Float(180,75);
 		
 		VGraph v = new VGraph(x,y,pol,start,end);
 		
 		boolean[][] g = v.adjG;
 		
-		
+
 		for(int i=0;i<g.length ; i++){
 			System.out.println();
 			for(int j=0; j<g[0].length; j++){
@@ -30,7 +34,8 @@ public class Test{
 			}
 		}
 		
-		NeighborListMap m = new NeighborListMap(v.adjG, x,y);
+		NeighborListMap m = new NeighborListMap(v.adjG, x,y,start, end);
+		
 		System.out.println(m.getShortestPath());
 		
 	}

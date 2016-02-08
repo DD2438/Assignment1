@@ -1,6 +1,7 @@
 package Astar;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,26 +12,36 @@ public class NeighborListMap {
     private int start;
     private int end;
     private int V;
-    private double[] x;
-    private double[] y;
+    private float[] x;
+    private float[] y;
 
     public boolean[][] map;
-    private double[][] Hmap;
+    
+    private double[] Hmap;
     private double[] Gmap;
+    private double[] Fmap;
+    
     private int[] parents;
+    Point2D.Float S;
+    Point2D.Float E;
+    
+    
     ArrayList<Integer> openList = new ArrayList<Integer>();
     ArrayList<Integer> closedList = new ArrayList<Integer>();
     ArrayList<Integer> path = new ArrayList<Integer>();
 
-    public NeighborListMap(boolean[][] map, double[] x, double[] y) {
-        this.x = x;
-        this.y = y;
+    public NeighborListMap(boolean[][] map, float[] x2, float[] y2, Point2D.Float S, Point2D.Float E) {
+    	this.S = S;
+    	this.E = E;
+        this.x = x2;
+        this.y = y2;
         start = map.length - 2;
         end = map.length - 1;
         V = map.length;
 
         this.map = map;
-        Hmap = new double[V][V];
+        Hmap = new double[V];
+        Fmap = new double[V];
         Gmap = new double[V];
         parents = new int[V];
 
@@ -41,17 +52,14 @@ public class NeighborListMap {
 
         for (int i = 0; i < Gmap.length; i++) {
             Gmap[i] = Double.MAX_VALUE;
+            Fmap[i] = Double.MAX_VALUE;
         }
 
         //calculate all distances to end
-        for (int i = 0; i < V - 2; i++) {
-            for (int j = i; j < V - 2; j++) {
-                if (map[i][j]) {
-                    double dist = calcDist(i, j);
-                    Hmap[i][j] = dist;
-                    Hmap[j][i] = dist;
-                }
-            }
+        for (int i = 0; i < V-2; i++) {
+
+            double dist = calcDist(i, E);
+        	Hmap[i]=dist;
         }
 
         //set start as parent to neighboring nodes
@@ -64,20 +72,38 @@ public class NeighborListMap {
         //add start to open list, set its G-value to 0
         openList.add(start);
         Gmap[start] = 0;
+        Fmap[start] = 0;
         parents[start] = start;
     }
 
     //calculates oclidian distance
     private double calcDist(int s, int e) {
+    	if(s==start)
+    		return calcDist(e,S);
         return Math.sqrt(Math.pow(x[s] - x[e], 2) + Math.pow(y[s] - y[e], 2));
     }
-
+    
+    private double calcDist(int s, Point2D.Float e) {
+        return Math.sqrt(Math.pow(x[s] - e.x, 2) + Math.pow(y[s] - e.y, 2));
+    }
     public ArrayList<Integer> getShortestPath() {
         int current;
 
         while (!openList.isEmpty()) {
+        	Collections.sort(openList, new Comparator<Integer>() {
+                @Override
+                public int compare(Integer f, Integer s)
+                {
+
+                    return  (int) (Fmap[f]-Fmap[s]);
+                }
+            });
+            System.out.println("oL " + openList.toString());
+            System.out.println("fL " + Arrays.toString(Fmap));
             current = openList.remove(0);
+            System.out.println("chose "+current);
             closedList.add(current);
+
             if (getNeighbors(current)) {
                 backtrack(current);
                 break;
@@ -104,7 +130,7 @@ public class NeighborListMap {
         //updates the Gvalues of neighbors
         for (int i = 0; i < V; i++) {
 
-            if (!map[current][i]) {
+            if (!map[current][i] || i == start || contains(closedList,i)) {
                 continue;
             }
 
@@ -116,16 +142,19 @@ public class NeighborListMap {
             //if new point, add to openlist
             if (!contains(openList, i) && !contains(closedList, i)) {
                 openList.add(i);
+                parents[i] = current; 
             }
 
             //calculate new value to be parents value + cost
             parent = parents[i];
-            newVal = Gmap[parent] + Hmap[current][i];
+            newVal = Gmap[parent] + calcDist(current,i);
 
             //Change values if new one is smaller
             if (newVal < Gmap[i] && i != start) {
+            	System.out.println("changing parent of "+i +" to "+current);
                 Gmap[i] = newVal;
                 parents[i] = current;
+                Fmap[i] = Gmap[i]+Hmap[i];
             }
 
         }

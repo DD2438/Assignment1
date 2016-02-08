@@ -14,6 +14,7 @@ public class panel extends JPanel{
 	 ArrayList<Line2D> list= new ArrayList<Line2D>();
 	 Line2D line = new Line2D.Double(0, 0, 0, 0);
 	 boolean main = false;
+	 
 	   public void paintComponent(Graphics g) {
 	       g2 = (Graphics2D) g;
 	       if(main){
@@ -31,6 +32,6 @@ public class panel extends JPanel{
 	   }
 
 	public void kek() {
-		main=true;
+		main = !main;
 	}
 }

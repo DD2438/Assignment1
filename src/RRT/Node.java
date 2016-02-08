@@ -6,6 +6,7 @@ import java.awt.geom.Point2D;
 public  class Node {
     Point2D.Float data;
     Node parent;
+    float speed;
     Point2D.Float v;
 
     float orientation;
