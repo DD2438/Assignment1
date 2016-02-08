@@ -8,8 +8,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class FileHandler {
+
+	ArrayList<Point2D.Float> road = new ArrayList<Point2D.Float>();
+	
 	
 	public void store(Node last) throws IOException{
 		File file = new File("test.txt");
@@ -18,7 +22,6 @@ public class FileHandler {
 		BufferedWriter bw = new BufferedWriter(fw);
 		
 			
-		ArrayList<Point2D.Float> path = new ArrayList<Point2D.Float>();
 		
 		
 		float distance = 0;
@@ -59,6 +62,7 @@ public class FileHandler {
 			for(int i=0; i<vals.length; i++){
 				Point2D.Float data = new Point2D.Float(Float.valueOf(vals[0]),Float.valueOf(vals[1]));
 				current = new Node(null,data,t);
+				road.add(data);
 				/*current.speed =;
 				current.v=; 
 				current.orientation=;*/ 
@@ -70,6 +74,8 @@ public class FileHandler {
 		
 		previous = current;
 		}
+		
+		Collections.reverse(road);
 		return first;
 	}
 }
