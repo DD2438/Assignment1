@@ -10,15 +10,15 @@ public class Discrete extends Motion {
 
     @Override
     public void move(Point2D.Float[] path) {
-        float[] curent_pos;
+        float[] current_pos;
         for (int i = 0; i < path.length; i++) {
-            curent_pos = remote.getPosition(robotHandle);
-            Point2D.Float center = new Point2D.Float(curent_pos[0], curent_pos[1]);
+            current_pos = remote.getPosition(robotHandle);
+            Point2D.Float center = new Point2D.Float(current_pos[0], current_pos[1]);
             float theta = angleInWorld(center, path[i]);          
             boolean dis_coverd = singleMove(path[i].x, path[i].y, theta);
             while (!dis_coverd) {
-                curent_pos = remote.getPosition(robotHandle);
-                center = new Point2D.Float(curent_pos[0], curent_pos[1]);
+                current_pos = remote.getPosition(robotHandle);
+                center = new Point2D.Float(current_pos[0], current_pos[1]);
                 theta = angleInWorld(center, path[i]);
                 dis_coverd = singleMove(path[i].x, path[i].y,theta);
             }
@@ -27,15 +27,19 @@ public class Discrete extends Motion {
     }
 
     public boolean singleMove(float x, float y, float theta) {
-        float[] curent_pos = remote.getPosition(robotHandle);
+        float[] current_pos = remote.getPosition(robotHandle);
         float[] position = new float[3];
         boolean dis_coverd = true;
-        position[0] = x - curent_pos[0];
-        position[1] = y - curent_pos[1];
+        position[0] = x - current_pos[0];
+        position[1] = y - current_pos[1];
         float dist = (float) Math.sqrt(position[0] * position[0] + position[1] * position[1]);
         if (dist > MAX_DIS) {
             position[0] = (position[0] / dist) * MAX_DIS;
             position[1] = (position[1] / dist) * MAX_DIS;
+            dis_coverd = false;
+        } else if (dist < -MAX_DIS) {
+            position[0] = (position[0] / dist) * -MAX_DIS;
+            position[1] = (position[1] / dist) * -MAX_DIS;
             dis_coverd = false;
         }
         float[] orientation = new float[3];

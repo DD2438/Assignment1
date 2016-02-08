@@ -45,10 +45,10 @@ public class Remote {
     }
 
     public float[] getPosition(int robotHandle) {
-        FloatWA curent_pos = new FloatWA(3);
+        FloatWA current_pos = new FloatWA(3);
         vrep.simxGetObjectPosition(remote.clientID, robotHandle,
-                -1, curent_pos, remoteApi.simx_opmode_oneshot_wait);
-        return curent_pos.getArray();
+                -1, current_pos, remoteApi.simx_opmode_oneshot_wait);
+        return current_pos.getArray();
     }
 
     public void setPosition(int robotHandle, float[] position) {
@@ -64,17 +64,17 @@ public class Remote {
     }
     
     public float getOrientation(int robotHandle) {
-        FloatWA curent_Orientation = new FloatWA(3);
+        FloatWA current_Orientation = new FloatWA(3);
         remote.vrep.simxGetObjectOrientation(clientID, robotHandle, getParent(robotHandle), 
-                curent_Orientation, remoteApi.simx_opmode_buffer);
-        return curent_Orientation.getArray()[2];
+                current_Orientation, remoteApi.simx_opmode_buffer);
+        return current_Orientation.getArray()[2];
     }
     
     public float getOrientationFirst(int robotHandle) {
-        FloatWA curent_Orientation = new FloatWA(3);
+        FloatWA current_Orientation = new FloatWA(3);
         remote.vrep.simxGetObjectOrientation(clientID, robotHandle, getParent(robotHandle), 
-                curent_Orientation, remoteApi.simx_opmode_streaming);
-        return curent_Orientation.getArray()[2];
+                current_Orientation, remoteApi.simx_opmode_streaming);
+        return current_Orientation.getArray()[2];
     }
     
     public void setOrientation(int robotHandle, float[] position) {

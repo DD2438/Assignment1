@@ -20,7 +20,7 @@ public class Main {
         DynamicCar dc = new DynamicCar("AudiR8_DynamicCar");
         DifferentialDrive dd = new DifferentialDrive("Tiger_DifferentialDrive");//
         int checkPoint = remote.getHandle("CheckPoint");
-        final Point2D.Float[] path = new Point2D.Float[9];
+        final Point2D.Float[] path = new Point2D.Float[10];
 //        for (int i = 0; i < path.length; i++) {
 //            path[i] = new Point2D.Float(i, i);
 //        }
@@ -52,6 +52,7 @@ public class Main {
         path[6] = new Point2D.Float(7.25f, 8.75f);
         path[7] = new Point2D.Float(8.5f, 11.75f);
         path[8] = new Point2D.Float(12.00f, 10.00f);
+        path[9] = new Point2D.Float(8.5f, 11.75f);
        
         float[] position = new float[3];
         for (int i = 0; i < path.length; i++) {

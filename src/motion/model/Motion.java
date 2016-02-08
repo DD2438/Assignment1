@@ -14,23 +14,24 @@ public abstract class Motion {
     public static final float CHECK_POINT_RADIUS = 0.5f;
     public static final float PHI_MAX = (float) Math.PI/4;
     public static final float LENGTH = 1.0f;
+    protected float current_theta;
     protected float dt = 0.2f;
     protected int robotHandle;
     protected Remote remote;
-    private final FloatWA curent_pos;
+    private final FloatWA current_pos;
     public Motion(String robot) {
         remote = Remote.getRemote();
         robotHandle = remote.getHandle(robot);
-        curent_pos = new FloatWA(3);
+        current_pos = new FloatWA(3);
         remote.vrep.simxGetObjectPosition(remote.clientID, robotHandle, -1,
-                curent_pos, remoteApi.simx_opmode_oneshot_wait);
+                current_pos, remoteApi.simx_opmode_oneshot_wait);
     }
 
     public void restPosition() {
         float[] position = new float[3];
-        position[0] = curent_pos.getArray()[0];
-        position[1] = curent_pos.getArray()[1];
-        position[2] = curent_pos.getArray()[2];
+        position[0] = current_pos.getArray()[0];
+        position[1] = current_pos.getArray()[1];
+        position[2] = current_pos.getArray()[2];
         FloatWA new_pos = new FloatWA(position);
         remote.vrep.simxSetObjectPosition(remote.clientID, robotHandle, -1,
                 new_pos, remoteApi.simx_opmode_oneshot_wait);
@@ -43,18 +44,6 @@ public abstract class Motion {
             Thread.sleep(dur);
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
-        }
-    }
-
-    protected boolean checkPointPassed(Point2D.Float checkPoint, Point2D.Float position, boolean directionX, boolean directionY) {
-        if (directionX && directionY) {
-            return (checkPoint.x < position.x || checkPoint.y < position.y);
-        } else if (!directionX && !directionY) {
-            return (checkPoint.x > position.x || checkPoint.y > position.y);
-        } else if (directionX && !directionY) {
-            return (checkPoint.x < position.x || checkPoint.y > position.y);
-        } else {
-            return (checkPoint.x > position.x || checkPoint.y < position.y);
         }
     }
 
